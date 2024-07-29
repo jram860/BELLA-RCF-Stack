@@ -4,7 +4,7 @@ This program is a flexible RCF Stack "calibration" simulation: the dose depth an
 
 ## Geometry Setup
 
-The calorimeter is a stack of alternating filter and detector layers. Once compiled, the `geomConfig.txt` file specifies the layer type (filter or detector), material, and thickness in the beam axis. 
+The calorimeter is a stack of alternating filter and detector layers. The `geomConfig.txt` file specifies the layer type (filter or detector), material, and thickness in the beam axis. 
 
 You can use any material included in the Geant4 NIST material catalog (https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Appendix/materialNames.html). You do not need to include the "G4_" prefix, but the material names must be in all caps.
 
