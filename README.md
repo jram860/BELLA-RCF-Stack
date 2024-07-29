@@ -1,6 +1,6 @@
-# BELLA RCF Stack Diagnostic Validation in Geant4
+# BELLA RCF Stack Diagnostic Simulation in Geant4
 
-This program is a flexible, semi-automated calorimeter "calibration" experiment, where the dose depth and Bragg Curve may be calculated over a range of monoenergetic pencil beams. 
+This program is a flexible RCF Stack "calibration" simulation: the dose depth and Bragg Curve are calculated (1) for a single monoenergetic proton beam or (2) over a range of monoenergetic proton beams. 
 
 ## Geometry Setup
 
@@ -26,5 +26,5 @@ A similar text file will be created with the normalized dose profile and tabulat
 
 
 
-This product includes software developed by Members of the Geant4 Collaboration (http://cern.ch/geant4) and was developed at Lawrence Berkeley National Laboratory.
+This product includes software developed by Members of the Geant4 Collaboration (http://cern.ch/geant4) and was developed in the BELLA Center at Lawrence Berkeley National Laboratory.
 
