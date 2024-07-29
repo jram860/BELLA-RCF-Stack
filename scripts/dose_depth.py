@@ -44,7 +44,7 @@ def plot_dose(df,layers):
     ax.set_ylim(0, current_y)
     ax.set_xlabel('Incident Energy [MeV]')
     ax.set_ylabel('Depth into Detector [mm]')
-    ax.set_title('Energy deposition profile')
+    ax.set_title('Bragg Peak Dose Depth')
     ax.grid()
     fig.tight_layout()
 
