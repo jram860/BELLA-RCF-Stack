@@ -1,0 +1,9 @@
+# Calorimeter geometry configuration File
+# Select a material from the Geant4 NIST material database: https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/Appendix/materialNames.html
+# Or choose gafchromic film: HDv2 for substrate
+# Format: LayerType  Material  Thickness(mm)
+
+Filter    POLYETHYLENE       50.0
+Detector  POLYETHYLENE      100.0
+Filter    POLYETHYLENE      100.0
+Detector  POLYETHYLENE      100.0      

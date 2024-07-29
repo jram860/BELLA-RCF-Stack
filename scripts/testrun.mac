@@ -1,0 +1,12 @@
+# Simple test run
+/run/initialize
+#
+/run/verbose 0
+/control/verbose 0
+/vis/verbose 0
+/process/verbose 0
+/tracking/verbose 0
+#
+/gun/particle proton
+/gun/energy 230 MeV
+/run/beamOn 10000

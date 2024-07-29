@@ -1,0 +1,4 @@
+# Loop over desired energy range
+# Syntax: /control/loop target_file iterator lower_bound upper_bound steps
+########################################
+/control/loop run.mac Ekin 10 230 10
