@@ -1,4 +1,4 @@
-# LBNL Diagnostic Validation in Geant4
+# BELLA RCF Stach Diagnostic Validation in Geant4
 
 This program is a flexible, semi-automated calorimeter "calibration" experiment, where the dose depth and Bragg Curve may be calculated over a range of monoenergetic pencil beams. 
 
