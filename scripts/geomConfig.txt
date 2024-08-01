@@ -3,7 +3,125 @@
 # Or choose gafchromic film: HDv2 for substrate
 # Format: LayerType  Material  Thickness(mm)
 
-Filter    POLYETHYLENE       50.0
-Detector  POLYETHYLENE      100.0
-Filter    POLYETHYLENE      100.0
-Detector  POLYETHYLENE      100.0      
+Filter      Al      0.025
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Filter      Cu      0.3
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Filter      Cu      0.3
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    HDv2    0.012
+Detector    GS      0.097
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Filter      Cu      0.3
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Filter      Cu      0.3
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Filter      Cu      0.3
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Filter      Cu      0.3
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Filter      Cu      0.3
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+
+Detector    GS      0.125
+Detector    EBT3    0.028
+Detector    GS      0.125
+

@@ -3,6 +3,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from scipy.signal import find_peaks
+
+def parse_dose_file(filename):
+    df  = np.genfromtxt(filename)
+    return df
 
 def parse_geometry_file(filename):
     layers = []
@@ -17,18 +22,12 @@ def parse_geometry_file(filename):
 
     return layers
 
-
-def parse_dose_file(filename):
-    df  = np.genfromtxt(filename)
-    return df
-    
-
 def plot_dose(df,layers):
     z = df[0,1:]
     E_init = df[1:,0]
     dose = df[1:,1:]
-    index_of_max = dose.argmax(1)
-    z_at_max = z[index_of_max]
+    # Initialize a list to store the peaks
+    peaks = []
 
     current_y = 0
     fig, ax = plt.subplots()
@@ -39,17 +38,25 @@ def plot_dose(df,layers):
             ax.add_patch(rect)
         current_y += thickness
 
-    ax.scatter(E_init,z_at_max,marker='o')
+    # Loop through each row in the 2D array
+    for row in dose:
+        peak_indices, _ = find_peaks(row)
+        peaks.append(peak_indices[-1])
+
+    ax.scatter(E_init,z[peaks])
 
     ax.set_ylim(0, current_y)
     ax.set_xlabel('Incident Energy [MeV]')
     ax.set_ylabel('Depth into Detector [mm]')
-    ax.set_title('Bragg Peak Dose Depth')
+    ax.set_title('Energy deposition profile')
     ax.grid()
+    ax.minorticks_on()
+    ax.grid(True,linestyle=':')
     fig.tight_layout()
 
     plt.show()
 
 df = parse_dose_file('bragg_curve.txt')
 layers = parse_geometry_file('geomConfig.txt')
+
 plot_dose(df,layers)

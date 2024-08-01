@@ -18,7 +18,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     private:
         void ReadGeometryFile(const std::string& fileName);
-        void ConstructCalorimeter(G4LogicalVolume* physWorld);
+        void ConstructCalorimeter(G4LogicalVolume* logicWorld);
         void DefineMaterials();
         void PrintCalorParameters();
 
@@ -30,9 +30,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         G4Material* worldMaterial; // need this to access in ConstructCalorimeter()
         
         // Store the readout from the geometry file
-        std::vector<G4String> filterMaterials;
-        std::vector<G4double> filterThicknesses;
-        std::vector<G4String> detectorMaterials;
-        std::vector<G4double> detectorThicknesses;
+        G4String volType;
+        G4String volMaterial;
+        G4double volThickness;
+        std::vector<G4String> layerType;
+        std::vector<G4String> layerMaterial;
+        std::vector<G4double> layerThickness;
 };
 #endif

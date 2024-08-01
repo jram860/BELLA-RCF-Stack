@@ -11,11 +11,13 @@
 #include <fstream>
 #include <sstream>
 
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction() {}
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction() {
+}
 
 DetectorConstruction::~DetectorConstruction() {}
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
+    DefineMaterials();
     ReadGeometryFile("geomConfig.txt");
     // Construct the World
     G4NistManager* nist = G4NistManager::Instance();
@@ -26,7 +28,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
     auto logicWorld = new G4LogicalVolume(solidWorld,worldMaterial,"World");
     auto physiWorld = new G4PVPlacement(nullptr,G4ThreeVector(),logicWorld,"World",nullptr,false,0);
 
-    DefineMaterials();
     ConstructCalorimeter(logicWorld);
     PrintCalorParameters();
 
@@ -47,9 +48,6 @@ void DetectorConstruction::ReadGeometryFile(const std::string& fileName) {
         if (line.empty() || line[0] == '#') {continue;}
 
         std::istringstream iss(line);
-        G4String volType;
-        G4String volMaterial;
-        G4double volThickness;
         
         iss >> volType >> volMaterial >> volThickness;
 
@@ -60,14 +58,9 @@ void DetectorConstruction::ReadGeometryFile(const std::string& fileName) {
 
         calorSizeZ += volThickness*mm;
 
-        if (volType == "Filter") {
-            filterMaterials.push_back(volMaterial);
-            filterThicknesses.push_back(volThickness*mm);
-        } else if (volType == "Detector") {
-            detectorMaterials.push_back(volMaterial);
-            detectorThicknesses.push_back(volThickness*mm);
-        }
-        
+        layerType.push_back(volType);
+        layerMaterial.push_back(volMaterial);
+        layerThickness.push_back(volThickness*mm);
     }
 }
 
@@ -75,17 +68,47 @@ void DetectorConstruction::DefineMaterials() {
     G4NistManager *nist = G4NistManager::Instance();
     // Define Custom Materials
     G4int ncomponents;
-    
-    // Gafchromic Film substrate... good enough approximation for the real composite material
+
+    // Gafchromic film substrate
+    // G4double substrateDensity = 1.35*g/cm3;
+    // G4Material *GS = new G4Material("GS", substrateDensity,ncomponents=3);
+    // GS->AddElement(nist->FindOrBuildElement("H"), 36.4*perCent);
+    // GS->AddElement(nist->FindOrBuildElement("C"), 45.5*perCent);
+    // GS->AddElement(nist->FindOrBuildElement("O"), 18.2*perCent);
+
     G4double substrateDensity = 1.2595*g/cm3;
-    G4Material *HDv2 = new G4Material("Gafchromic_substrate", substrateDensity,ncomponents=6);
-    HDv2->AddElement(nist->FindOrBuildElement("H"),38.8*perCent);
-    HDv2->AddElement(nist->FindOrBuildElement("Li"),0.1*perCent);
-    HDv2->AddElement(nist->FindOrBuildElement("C"),43.4*perCent);
-    HDv2->AddElement(nist->FindOrBuildElement("O"),17.5*perCent);
-    HDv2->AddElement(nist->FindOrBuildElement("Na"),0.1*perCent);
-    HDv2->AddElement(nist->FindOrBuildElement("Cl"),0.1*perCent);
+    G4Material *GS = new G4Material("GS", substrateDensity,ncomponents=6);
+    GS->AddElement(nist->FindOrBuildElement("H"),38.8*perCent);
+    GS->AddElement(nist->FindOrBuildElement("Li"),0.1*perCent);
+    GS->AddElement(nist->FindOrBuildElement("C"),43.4*perCent);
+    GS->AddElement(nist->FindOrBuildElement("O"),17.5*perCent);
+    GS->AddElement(nist->FindOrBuildElement("Na"),0.1*perCent);
+    GS->AddElement(nist->FindOrBuildElement("Cl"),0.1*perCent);
+    //HD-V2 Active Layer
+    G4double HDv2_Density = 1.2595*g/cm3;
+    G4Material *HDv2 = new G4Material("HDv2", HDv2_Density,ncomponents=9);
+    HDv2->AddElement(nist->FindOrBuildElement("H"), 58.1*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("Li"), 0.6*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("C"), 27.7*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("N"), 0.4*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("O"),11.7*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("Na"), 0.5*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("Al"), 0.3*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("S"), 0.1*perCent);
+    HDv2->AddElement(nist->FindOrBuildElement("Cl"), 0.6*perCent);
+
+    //EBT3 Active Layer
+    G4double EBT3_density = 1.20*g/cm3;
+    G4Material *EBT3 = new G4Material("EBT3", EBT3_density, ncomponents = 5);
+    EBT3->AddElement(nist->FindOrBuildElement("H"), 56.8*perCent);
+    EBT3->AddElement(nist->FindOrBuildElement("Li"), 0.6*perCent);
+    EBT3->AddElement(nist->FindOrBuildElement("C"), 27.6*perCent);
+    EBT3->AddElement(nist->FindOrBuildElement("O"), 13.3*perCent);
+    EBT3->AddElement(nist->FindOrBuildElement("Al"), 1.7*perCent);
+
 }
+
+
 
 void DetectorConstruction::ConstructCalorimeter(G4LogicalVolume* logicWorld) {
 
@@ -113,34 +136,34 @@ void DetectorConstruction::ConstructCalorimeter(G4LogicalVolume* logicWorld) {
     // The front face of calorimeter is at origin. 
     G4double z = -calorSizeZ/2;
 
-    // Iterate over number of filters so that each filter/detector pair have same copy number
-    for (size_t i = 0; i < filterMaterials.size(); ++i) {
-        //Construct the filter
-        G4Material* filterMat = nist->FindOrBuildMaterial("G4_" + filterMaterials[i]);
-            if (!filterMat) {G4Material* filterMat = G4Material::GetMaterial(filterMaterials[i]);}
-        
-        G4Box* solidFilter = new G4Box("Filter", calorSizeXY/2, calorSizeXY/2, filterThicknesses[i]/2);
-        G4LogicalVolume* logicFilter = new G4LogicalVolume(solidFilter,filterMat,"logicFilter");
-        logicFilter->SetVisAttributes(filterVisAtt);
-        new G4PVPlacement(0,G4ThreeVector(0,0,z+filterThicknesses[i]/2),logicFilter,"Filter",logicCalor,false,i,true);
-        
-        z += filterThicknesses[i];
+    for (size_t i = 0; i < layerType.size(); ++i) {
 
-        G4Material* detectorMat = nist->FindOrBuildMaterial("G4_" + detectorMaterials[i]);
-            if (!detectorMat) {G4Material* detectorMat = G4Material::GetMaterial(detectorMaterials[i]);}
+        G4Material* layerMat = nist->FindOrBuildMaterial("G4_" + layerMaterial[i]);
+        if (!layerMat) {layerMat = G4Material::GetMaterial(layerMaterial[i]);}
 
-        G4Box* solidDetector = new G4Box("Detector",calorSizeXY/2,calorSizeXY/2,detectorThicknesses[i]/2);
-        G4LogicalVolume* logicDetector = new G4LogicalVolume(solidDetector,detectorMat,"logicDetector");
-        logicDetector->SetVisAttributes(detectorVisAtt);
-        new G4PVPlacement(0,G4ThreeVector(0,0,z+detectorThicknesses[i]/2),logicDetector,"Detector",logicCalor,false,i,true);
+        if(layerType[i] == "Filter"){
+            G4Box* solidFilter = new G4Box("Filter", calorSizeXY/2, calorSizeXY/2, layerThickness[i]/2);
+            G4LogicalVolume* logicFilter = new G4LogicalVolume(solidFilter,layerMat,"logicFilter");
+            logicFilter->SetVisAttributes(filterVisAtt);
+            new G4PVPlacement(0,G4ThreeVector(0,0,z+layerThickness[i]/2),logicFilter,"Filter",logicCalor,false,i,true);
+            
+            z += layerThickness[i];
+        }
 
-        z += detectorThicknesses[i];
+        if (layerType[i] == "Detector") {
+            G4Box* solidDetector = new G4Box("Detector",calorSizeXY/2,calorSizeXY/2,layerThickness[i]/2);
+            G4LogicalVolume* logicDetector = new G4LogicalVolume(solidDetector,layerMat,"logicDetector");
+            logicDetector->SetVisAttributes(detectorVisAtt);
+            new G4PVPlacement(0,G4ThreeVector(0,0,z+layerThickness[i]/2),logicDetector,"Detector",logicCalor,false,i,true);
+
+            z += layerThickness[i];
+        }
     }
 }
 
 void DetectorConstruction::PrintCalorParameters() {
-    G4int nbLayers= filterMaterials.size() + detectorMaterials.size();
     //Print out Calorimeter geometry information
+    G4int nbLayers = layerType.size();
     G4cout << std::string(80, '-') << G4endl;
     G4cout << "---> Calorimeter is constructed" << G4endl;
     G4cout << "\t---> Number of Layers: " << nbLayers << G4endl;

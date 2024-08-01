@@ -1,6 +1,7 @@
 #include "G4UImanager.hh"
 #include "G4UIExecutive.hh"
 #include "G4RunManagerFactory.hh"
+#include "CLHEP/Random/Random.h"
 #include "G4VisExecutive.hh"
 #include "QBBC.hh"
 
@@ -10,9 +11,14 @@
 #include "PhysicsList.hh"
 
 #include <iostream>
+#include <ctime>
 
 int main(int argc, char** argv)
 {
+	//Set the seed with the current time
+	G4long seed = std::time(nullptr);
+    CLHEP::HepRandom::setTheSeed(42);
+
     G4UIExecutive* ui = nullptr;
     if (argc == 1){
         ui = new G4UIExecutive(argc,argv);
