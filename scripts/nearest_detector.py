@@ -81,8 +81,7 @@ def find_nearest_detector(peaks,z,detector_midpoints,max_distance):
 
 
 
-z,E_init,dose = parse_dose_file('bragg_curveLivermore.txt')
-print(z)
+z,E_init,dose = parse_dose_file('bragg_curveLivermoreFine.txt')
 layers, materials = parse_geometry_file('geomConfig.txt')
 
 peaks = find_last_peak(dose)
@@ -100,14 +99,13 @@ for i, detector in enumerate(closest_detectors):
         E_plot.append(E_init[i])
         Layer_no.append(detector_index[detector])
 
-
 fig,ax = plt.subplots()
-
-ax.scatter(Layer_no,E_init)
+ax.scatter(Layer_no,E_plot, label = 'Geant4',marker = 's')
+ax.legend()
 ax.grid(True,linestyle=':')
 ax.set_xlabel('Detector Number')
-ax.set_ylabel('Incident Energy')
-ax.set_title('RCF Stack Sensitivity')
+ax.set_ylabel('Incident Energy [MeV]')
+ax.set_title('RCF Stack Layer Sensitivity')
 plt.xticks(detector_index)
-plt.yticks(E_plot)
+plt.yticks(E_init[0::2]) # Just so the plot isn't too crowded. 
 plt.show()
